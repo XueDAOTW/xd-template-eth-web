@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.custom-button {
+  @apply mt-6 px-10 py-1 text-white text-lg bg-gray-400 bg-opacity-50;
+  clip-path: polygon(0 0, 100% 0, 100% 70%, 90% 100%, 0 100%);
+}
+
+.text-stroke {
+  -webkit-text-stroke: 2px white;
+    -webkit-text-fill-color: transparent;
+}
+
+.spinner {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #474bff;
+  -webkit-mask: radial-gradient(
+    circle closest-side at 50% 40%,
+    #0000 94%,
+    #000
+  );
+  transform-origin: 50% 40%;
+  animation: spinner-pl92zb 1s infinite linear;
+}
+
+@keyframes spinner-pl92zb {
+  100% {
+    transform: rotate(1turn);
+  }
+}
+
+.hover-spin {
+  transition: transform 0.3s ease-in-out;
+}
+
+.hover-spin:hover {
+  transform: rotate(90deg);
+}
+
+.hover-spin:focus {
+  transform: rotate(360deg);
+}
