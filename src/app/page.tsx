@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
-    <main className="bg-banner-bg bg-cover bg-center">
+    <main className="bg-test bg-cover bg-center">
       <Navbar />
       <Banner />
       <Footer />

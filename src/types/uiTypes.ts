@@ -11,3 +11,8 @@ export type NavigationItem = {
     href: string;
     current: boolean;
 }
+
+export type LinkListProps = {
+    name: string;
+    href: string;
+}

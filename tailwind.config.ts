@@ -12,7 +12,7 @@ const config: Config = {
 
       },
       backgroundImage: theme => ({
-        'banner-bg': "url('/bg.webp')",
+        'test': "url('/bg.jpg')"
       }),
       fontFamily: {
         sans: ['Arial', 'sans-serif'],
