@@ -3,26 +3,38 @@ import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { MintTokenProps } from '@/interfaces/api-interfaces';
-import { useAccount, useBalance } from "wagmi";
+import { useAccount, useBalance, useReadContract } from "wagmi";
 import Loading from './loading';
 import { erc20TestAddress } from '@/contract/address/testAddress';
 import { MintButton } from './mint-erc20';
+import { erc20TestAbi } from '@/contract/abi/testAbi';
 
-export default function MintToken({ show, handleClose }: MintTokenProps) {
+export function MintToken({ show, handleClose }: MintTokenProps) {
 
     const [amount, setAmount] = useState<number>(0);
     const { address, isConnected, chain } = useAccount();
 
+    //Read account sepolia faucet balance
     const { data: SepoliaBalanceData, refetch: refetchSepoliaBalance } = useBalance({
         address: address,
         unit: 'ether',
     });
 
-    const { data: XUEDAOTESTBalanceData, refetch: refetchXUEDAOTESTBalance } = useBalance({
-        address: address,
-        token: erc20TestAddress,
-    });
-
+    //Read erc20 token balance
+    const { data: balance, refetch: refetchXUEDAOTESTBalance } = useReadContract({
+        address: erc20TestAddress,
+        abi: erc20TestAbi,
+        functionName: 'balanceOf',
+        args: [address],
+      })
+    
+    //Read erc20 token symbol
+    const { data: symbol } = useReadContract({
+        address: erc20TestAddress,
+        abi: erc20TestAbi,
+        functionName: 'symbol',
+      })  
+    
     const handleChange = (event: React.FormEvent<HTMLInputElement>) => {
         const value = event.currentTarget.value;
         const parsedValue = parseInt(value, 10);
@@ -31,12 +43,12 @@ export default function MintToken({ show, handleClose }: MintTokenProps) {
     };
 
     useEffect(() => {
-        refetchSepoliaBalance
+        refetchSepoliaBalance()
     }, [SepoliaBalanceData, refetchSepoliaBalance])
 
     useEffect(() => {
-        refetchXUEDAOTESTBalance
-    }, [XUEDAOTESTBalanceData, refetchXUEDAOTESTBalance])
+        refetchXUEDAOTESTBalance()
+    }, [balance, refetchXUEDAOTESTBalance])
 
     if (isConnected) {
         return (
@@ -50,7 +62,7 @@ export default function MintToken({ show, handleClose }: MintTokenProps) {
                                     <div className="grid grid-cols-1 sm:grid-cols-2 text-white gap-2 sm:gap-3">
                                         <p>Current Chain: {chain?.name}</p>
                                         <p>Sepolia Faucet: {SepoliaBalanceData?.formatted} {SepoliaBalanceData?.symbol}</p>
-                                        <p>Test Token Balance: {XUEDAOTESTBalanceData?.value.toString()} {XUEDAOTESTBalanceData?.symbol}</p>
+                                        <p>Test Token Balance: {balance?.toString()} {symbol?.toString()}</p>
                                     </div>
                                     <br />
                                     <div className="grid grid-cols-1 sm:grid-cols-3 items-center gap-2 sm:gap-3">

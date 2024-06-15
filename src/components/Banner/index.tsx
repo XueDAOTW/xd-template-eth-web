@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import MintToken from './mintToken';
+import { MintToken } from './mintToken';
 
 export default function Banner() {
   const [isOpen, setIsOpen] = useState(false)

@@ -8,9 +8,6 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      colors: {
-
-      },
       backgroundImage: theme => ({
         'test': "url('/bg.jpg')"
       }),
