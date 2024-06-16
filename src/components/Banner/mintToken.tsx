@@ -20,14 +20,12 @@ export function MintToken({ show, handleClose }: MintTokenProps) {
         unit: 'ether',
     });
 
-    //Read erc20 token balance
-    const { data: balance, refetch: refetchXUEDAOTESTBalance } = useReadContract({
-        address: erc20TestAddress,
-        abi: erc20TestAbi,
-        functionName: 'balanceOf',
-        args: [address],
-      })
-    
+    //Read TestToken balance
+    const { data: XUEDAOTESTBalanceData, refetch: refetchXUEDAOTESTBalance } = useBalance({
+        address: address,
+        token: erc20TestAddress,
+    });
+
     //Read erc20 token symbol
     const { data: symbol } = useReadContract({
         address: erc20TestAddress,
@@ -48,7 +46,7 @@ export function MintToken({ show, handleClose }: MintTokenProps) {
 
     useEffect(() => {
         refetchXUEDAOTESTBalance()
-    }, [balance, refetchXUEDAOTESTBalance])
+    }, [XUEDAOTESTBalanceData, refetchXUEDAOTESTBalance])
 
     if (isConnected) {
         return (
@@ -62,7 +60,7 @@ export function MintToken({ show, handleClose }: MintTokenProps) {
                                     <div className="grid grid-cols-1 sm:grid-cols-2 text-white gap-2 sm:gap-3">
                                         <p>Current Chain: {chain?.name}</p>
                                         <p>Sepolia Faucet: {SepoliaBalanceData?.formatted} {SepoliaBalanceData?.symbol}</p>
-                                        <p>Test Token Balance: {balance?.toString()} {symbol?.toString()}</p>
+                                        <p>Test Token Balance: {XUEDAOTESTBalanceData?.value.toString()} {symbol?.toString()}</p>
                                     </div>
                                     <br />
                                     <div className="grid grid-cols-1 sm:grid-cols-3 items-center gap-2 sm:gap-3">
