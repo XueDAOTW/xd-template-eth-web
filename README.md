@@ -3,9 +3,9 @@
 First, run the development server:
 
 ```bash
-git clone git@github.com:crypto0627/xuedao-workshop.git
-cd my-first-dapp
-npm i
+git clone https://github.com/XueDAOTW/xd-template-eth-web.git
+cd xd-template-eth-web
+pnpm i
 ```
 
 Create .env file
@@ -15,7 +15,7 @@ NEXT_PUBLIC_ALCHEMY_ID="Alchemy ID"
 ```
 Run
 ```bash
-npm run dev
+pnpm dev
 ```
 
 ## Deploy on Vercel
