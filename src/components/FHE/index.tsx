@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState, useCallback } from "react";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useBlockNumber, useChainId } from "wagmi";
 import Image from "next/image";
 import { fheVoteAbi } from "@/contract/abi/voteAbi";
@@ -11,14 +12,12 @@ import {
   useEthersSigner,
 } from "@/utils/viemEthersConverters";
 
-export default function LandingPage() {
+export default function FHE() {
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [proposalName, setProposalName] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
   const [fheClient, setFheClient] = useState<FhenixClient | null>(null);
-  const [finalizedClicked, setFinalizedClicked] = useState(false);
   const [finalized, setFinalized] = useState<boolean>(false);
   const [winningValues, setWinningValues] = useState<{
     uint8Value: number | null;
@@ -47,8 +46,7 @@ export default function LandingPage() {
   const getFheClient = useCallback(() => {
     return fheClient;
   }, [fheClient]);
-  
-  
+
   // Create a contract instance
   const votingContract = useCallback(
     () => new ethers.Contract(votingAddress, fheVoteAbi, provider),
@@ -59,9 +57,9 @@ export default function LandingPage() {
     try {
       const name = await votingContract().proposal();
       setProposalName(name);
-      setIsLoading(false);
+      console.log("Proposal Name: ", name);
     } catch (error) {
-      setIsLoading(false);
+      setError(error as Error);
     }
   }, [votingContract]);
 
@@ -119,8 +117,8 @@ export default function LandingPage() {
     try {
       const encryptedVote = await encryptVote(selectedOption);
       if (!signer) {
-        console.error('Signer is not available')
-        return
+        console.error("Signer is not available");
+        return;
       }
       if (encryptedVote) {
         await votingContract().connect(signer).vote(encryptedVote);
@@ -134,12 +132,11 @@ export default function LandingPage() {
   const handleFinalizeVoting = async () => {
     try {
       if (!signer) {
-        console.error('Signer is not available')
-        return
+        console.error("Signer is not available");
+        return;
       }
       const tx = await votingContract().connect(signer).finalize();
       await tx.wait();
-      setFinalizedClicked(true);
       fetchWinningValues();
     } catch (error) {
       setError(error as Error);
@@ -175,7 +172,7 @@ export default function LandingPage() {
       <div className="flex items-center justify-between">
         <button
           type="submit"
-          className="rounded-xl border border-slate-500 bg-gradient-to-b from-zinc-800/30 to-zinc-500/40 p-4 text-white font-bold focus:outline-none focus:shadow-outline"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         >
           Submit Vote
         </button>
@@ -210,7 +207,10 @@ export default function LandingPage() {
   const options = ["Patrick Star", "Sandy Cheeks", "Mr. Krabs"];
 
   return (
-    <main className="fixed w-full flex flex-col items-center justify-center p-10 bg-gradient-to-b ">
+    <main className="fixed w-full flex flex-col items-center justify-center p-10 ">
+      <nav className="flex justify-end w-full max-w-4xl">
+        <ConnectButton />
+      </nav>
       <div>
         <h1 className="text-3xl font-bold py-5">FHE Voting</h1>
       </div>
@@ -228,7 +228,7 @@ export default function LandingPage() {
       )}
 
       {/* Footer */}
-      <div className="fixed bottom-0 w-full flex justify-center py-10 bg-gradient-to-b ">
+      <div className="fixed bottom-0 w-full flex justify-center py-10">
         <div className="flex space-x-5">
           <p className="rounded-xl border border-slate-500 bg-gradient-to-b from-zinc-800/30 to-zinc-500/40 p-4 flex items-center text-xs">
             Voting Contract: {votingAddress}
