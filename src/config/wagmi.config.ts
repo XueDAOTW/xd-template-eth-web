@@ -1,16 +1,40 @@
 import { getDefaultConfig } from '@rainbow-me/rainbowkit';
 import { http } from 'wagmi';
-import { sepolia } from 'wagmi/chains';
+import type { Chain } from 'viem'
 
 const walletConnectProjectId: string = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || '953b8aabd42f299570ac0cb2509db530';
-const providerKey: string = `https://eth-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}` || 'https://eth-sepolia.g.alchemy.com/v2/wZa6j3JHIYRda8QJfH7wpxO45xcadbRb';
+const fhenix = {
+  id: 8008135,
+  name: 'Fhenix',
+  nativeCurrency: { name: 'tFHE', symbol: 'FHE', decimals: 18 },
+  rpcUrls: {
+    default: { http: ['https://api.helium.fhenix.zone'] },
+  },
+  blockExplorers: {
+    default: { name: 'Explorer', url: 'https://explorer.helium.fhenix.zone' },
+  },
+  contracts: {
+      ensRegistry: {
+        address: '0x0',
+    },
+    ensUniversalResolver: {
+      address: '0x0',
+      blockCreated: 16773775,
+    },
+    multicall3: {
+      // not supported?
+      address: '0x',
+      blockCreated: 8123891232939923,
+    },
+  },
+} as const satisfies Chain
 
 export const config = getDefaultConfig({
   transports: {
-    [sepolia.id]: http(providerKey),
+    [fhenix.id]: http(),
   },
     appName: 'My-first-dapp',
     projectId: walletConnectProjectId,
-    chains: [sepolia],
+    chains: [fhenix],
     ssr: true,
   });
